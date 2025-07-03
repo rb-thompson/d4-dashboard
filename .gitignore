@@ -1,0 +1,8 @@
+# ignore all venv directories
+venv/
+
+# ignore all __pycache__ directories
+__pycache__/
+
+# ignore database files
+*.sqlite3
