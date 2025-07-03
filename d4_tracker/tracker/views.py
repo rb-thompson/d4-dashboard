@@ -8,12 +8,8 @@ def dashboard(request):
     if request.method == 'POST':
         form = SessionForm(request.POST)
         if form.is_valid():
-            # Update paragon_total to current Paragon level, capping at 200 per session
-            current_paragon = min(form.cleaned_data['paragon_points'], 200)
-            form.instance.paragon_points = current_paragon
+            # Save paragon_points as logged, no cap
             form.save()
-            # Update all sessions' paragon_total to the latest level
-            Session.objects.all().update(paragon_points=current_paragon)
     else:
         form = SessionForm()
     
@@ -43,11 +39,12 @@ def dashboard(request):
         # Metrics with fallback for NaN
         metrics = {
             'mythic_count': df['mythics_dropped'].sum(),
-            'mythic_drop_rate': (df['mythics_dropped'].mean() / df['session_length'].mean() * 60 * 100) if df['session_length'].mean() else 0,
+            'mythic_drop_rate': (df['mythics_dropped'].mean() / df['session_length'].mean() * 60) if df['session_length'].mean() else 0,  # Drops/hour
             'avg_dps': df['estimated_dps'].mean() if pd.notna(df['estimated_dps']).all() else 0,
             'avg_crit': df['crit_chance'].mean() if pd.notna(df['crit_chance']).all() else 0,
-            'paragon_total': df['paragon_points'].iloc[-1] if not df.empty else 0,
+            'paragon_total': df['paragon_points'].iloc[-1] if not df.empty else 0,  # Latest value
             'avg_fun': df['fun_score'].mean() if pd.notna(df['fun_score']).all() else 0,
+            'total_sessions': len(df)  # Total number of logged sessions
         }
         
         # Style and create Plotly charts
@@ -95,7 +92,7 @@ def dashboard(request):
             plot_bgcolor='#111827',
             paper_bgcolor='#111827',
             title_font_color='#00ff41',
-            font_color='#111827',
+            font_color='#00ff41',
             title_font_size=18
         )
         fun_fig = px.scatter(title='Fun vs Session Length (No Data)')
@@ -103,16 +100,9 @@ def dashboard(request):
             plot_bgcolor='#111827',
             paper_bgcolor='#111827',
             title_font_color='#00ff41',
-            font_color='#111827',
+            font_color='#00ff41',
             title_font_size=18
         )
-
-        # Hide gridlines
-        trend_fig.update_xaxes(showgrid=False)
-        trend_fig.update_yaxes(showgrid=False)
-        fun_fig.update_xaxes(showgrid=False)
-        fun_fig.update_yaxes(showgrid=False)
-
         # No data case for metrics
         metrics = {
             'mythic_count': 'No Data',
@@ -121,6 +111,7 @@ def dashboard(request):
             'avg_crit': 'No Data',
             'paragon_total': 'No Data',
             'avg_fun': 'No Data',
+            'total_sessions': 'No Data'
         }
 
     return render(request, 'tracker/dashboard.html', {

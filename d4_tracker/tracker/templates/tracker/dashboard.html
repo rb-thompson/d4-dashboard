@@ -54,12 +54,40 @@
         </div>
         <div class="mt-4">
             <h2 class="text-xl">Metrics</h2>
-            <p>Mythics Acquired: {{ metrics.mythic_count }}</p>
-            <p>Mythic Drop Rate: {{ metrics.mythic_drop_rate }}% per hour</p>
-            <p>Estimated DPS: {{ metrics.avg_dps }}</p>
-            <p>Average Crit Chance: {{ metrics.avg_crit }}</p>
-            <p>Total Paragon Level: {{ metrics.paragon_total }}</p>
-            <p>Average Fun Score: {{ metrics.avg_fun }}</p>
+            <table class="w-full text-left border-collapse">
+                <tr class="border-b border-gray-600">
+                    <th class="p-2 text-green-400">Metric</th>
+                    <th class="p-2 text-green-400">Value</th>
+                </tr>
+                <tr class="border-b border-gray-600">
+                    <td class="p-2">Mythics Acquired</td>
+                    <td class="p-2">{{ metrics.mythic_count }}</td>
+                </tr>
+                <tr class="border-b border-gray-600">
+                    <td class="p-2">Mythic Drop Rate (drops/hr)</td>
+                    <td class="p-2">{{ metrics.mythic_drop_rate }}</td>
+                </tr>
+                <tr class="border-b border-gray-600">
+                    <td class="p-2">Estimated DPS</td>
+                    <td class="p-2">{{ metrics.avg_dps }}</td>
+                </tr>
+                <tr class="border-b border-gray-600">
+                    <td class="p-2">Average Crit Chance</td>
+                    <td class="p-2">{{ metrics.avg_crit }}</td>
+                </tr>
+                <tr class="border-b border-gray-600">
+                    <td class="p-2">Total Paragon Level</td>
+                    <td class="p-2">{{ metrics.paragon_total }}</td>
+                </tr>
+                <tr class="border-b border-gray-600">
+                    <td class="p-2">Average Fun Score</td>
+                    <td class="p-2">{{ metrics.avg_fun }}</td>
+                </tr>
+                <tr>
+                    <td class="p-2">Total Sessions Logged</td>
+                    <td class="p-2">{{ metrics.total_sessions }}</td>
+                </tr>
+            </table>
         </div>
     </div>
 
